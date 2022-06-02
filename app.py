@@ -1,5 +1,5 @@
 #import packages
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
 import os
 import random
 from flask import request, jsonify
@@ -216,6 +216,22 @@ def logoutpg():
     loginStatus = 0
     return render_template('login.html')
     
+@app.route("/get_csv")
+def get_csv():
+    #csv = '1,2,3\n4,5,6\n'
+    file = open('data.txt','r')
+    csv = 'temperature,current,RMS_x,RMS_y,RMS_z\n'
+    data = file.readlines()
+    for d in data:
+        csv+=d
+        
+    file.close()
+    return Response(
+        csv,
+        mimetype="text/csv",
+        headers={"Content-disposition":
+                 "attachment; filename=data.csv"})
+
 
 @app.route('/dashboard', methods=['POST','GET'])
 def dashboardpg():
@@ -253,6 +269,6 @@ def dashboardpg():
 
 
 if __name__=='__main__':
-    app.debug = True
+#     app.debug = True
     app.run()
 
